@@ -28,17 +28,3 @@ props={props}"""
         for key, value in self.props.items():
             texts.append(f' {key}="{value}"')
         return "".join(texts)
-
-
-class LeafNode(HTMLNode):
-    def __init__(self, tag, value, props=None):
-        super().__init__(tag, value, props)
-        del self.children
-
-    def to_html(self):
-        if self.value is None:
-            raise ValueError
-        if self.tag is None:
-            return self.value
-
-        return f"<{self.tag}>{self.value}</{self.tag}>"
