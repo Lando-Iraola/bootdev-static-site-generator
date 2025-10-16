@@ -57,9 +57,10 @@ def split_nodes_delimiter(old_nodes, delimeter, text_type):
             continue
 
         s_str = node.text.split(delimeter)
-        new_nodes.append(TextNode(s_str[0], TextType.TEXT))
-        new_nodes.append(TextNode(s_str[1], text_type))
-        if len(s_str) > 2:
-            new_nodes.append(TextNode(s_str[2], TextType.TEXT))
+        for i in range(len(s_str)):
+            if (i + 1) % 2 == 0:
+                new_nodes.append(TextNode(s_str[i], text_type))
+            elif s_str[i] != "":
+                new_nodes.append(TextNode(s_str[i], TextType.TEXT))
 
     return new_nodes

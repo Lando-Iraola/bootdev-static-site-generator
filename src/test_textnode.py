@@ -44,6 +44,39 @@ class TestTextNode(unittest.TestCase):
         node = TextNode("This is a text node _with italics in between!_", TextType.TEXT)
         new_nodes = split_nodes_delimiter([node], "_", TextType.ITALIC)
 
+        expected_nodes = [
+            TextNode("This is a text node ", TextType.TEXT),
+            TextNode("with italics in between!", TextType.ITALIC),
+        ]
+        self.assertEqual(repr(new_nodes), repr(expected_nodes))
+
+    def test_bold_delimiter(self):
+        node = TextNode(
+            "This is a text node **with BOLD in between!** its contents", TextType.TEXT
+        )
+        new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
+        expected_nodes = [
+            TextNode("This is a text node ", TextType.TEXT),
+            TextNode("with BOLD in between!", TextType.BOLD),
+            TextNode(" its contents", TextType.TEXT),
+        ]
+        self.assertEqual(repr(new_nodes), repr(expected_nodes))
+
+    def test_bold_delimiter_twice_in_a_row(self):
+        node = TextNode(
+            "This is a text node **with BOLD in between!** its contents in two **places!** woah!",
+            TextType.TEXT,
+        )
+        new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
+        expected_nodes = [
+            TextNode("This is a text node ", TextType.TEXT),
+            TextNode("with BOLD in between!", TextType.BOLD),
+            TextNode(" its contents in two ", TextType.TEXT),
+            TextNode("places!", TextType.BOLD),
+            TextNode(" woah!", TextType.TEXT),
+        ]
+        self.assertEqual(repr(new_nodes), repr(expected_nodes))
+
 
 if __name__ == "__main__":
     unittest.main()
