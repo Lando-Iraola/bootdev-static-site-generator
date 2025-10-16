@@ -48,3 +48,18 @@ def text_node_to_html_node(text_node):
             return LeafNode("a", text_node.text, {"href": text_node.url})
         case _:
             raise ValueError("unknown text type")
+
+
+def split_nodes_delimiter(old_nodes, delimeter, text_type):
+    new_nodes = []
+    for node in old_nodes:
+        if node.text_type != TextType.TEXT:
+            continue
+
+        s_str = node.text.split(delimeter)
+        new_nodes.append(TextNode(s_str[0], TextType.TEXT))
+        new_nodes.append(TextNode(s_str[1], text_type))
+        if len(s_str) > 2:
+            new_nodes.append(TextNode(s_str[2], TextType.TEXT))
+
+    return new_nodes
