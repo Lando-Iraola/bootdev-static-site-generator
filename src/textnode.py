@@ -1,3 +1,4 @@
+import re
 from enum import Enum
 
 from leafnode import LeafNode
@@ -64,3 +65,19 @@ def split_nodes_delimiter(old_nodes, delimeter, text_type):
                 new_nodes.append(TextNode(s_str[i], TextType.TEXT))
 
     return new_nodes
+
+
+def extract_markdown_images(text):
+    first_pattern = r"(!\[.+?\])(\(.+?\))"
+    second_pattern = r"(?<=!\[).*(?=\])|(?<=\().*(?=\))"
+    matches = re.findall(first_pattern, text)
+    list_of_tuples = []
+    tuples = ()
+    for match in matches:
+        for text in match:
+            tuples = tuples + (re.findall(second_pattern, text)[0],)
+            if len(tuples) == 2:
+                list_of_tuples.append(tuples)
+                tuples = ()
+
+    return list_of_tuples

@@ -1,6 +1,12 @@
 import unittest
 
-from textnode import TextNode, TextType, split_nodes_delimiter, text_node_to_html_node
+from textnode import (
+    TextNode,
+    TextType,
+    extract_markdown_images,
+    split_nodes_delimiter,
+    text_node_to_html_node,
+)
 
 
 class TestTextNode(unittest.TestCase):
@@ -76,6 +82,32 @@ class TestTextNode(unittest.TestCase):
             TextNode(" woah!", TextType.TEXT),
         ]
         self.assertEqual(repr(new_nodes), repr(expected_nodes))
+
+    def test_extract_markdown_images(self):
+        matches = extract_markdown_images(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)"
+        )
+        self.assertListEqual([("image", "https://i.imgur.com/zjjcJKZ.png")], matches)
+
+    def test_extract_markdown_images_malformed(self):
+        matches = extract_markdown_images(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png"
+        )
+        self.assertListEqual([], matches)
+
+    def test_extract_markdown_images_4_times(self):
+        matches = extract_markdown_images(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) ![image](https://i.imgur.com/zjjcJKZ.png)![image](https://i.imgur.com/zjjcJKZ.png) ![image](https://i.imgur.com/zjjcJKZ.png)"
+        )
+        self.assertListEqual(
+            [
+                ("image", "https://i.imgur.com/zjjcJKZ.png"),
+                ("image", "https://i.imgur.com/zjjcJKZ.png"),
+                ("image", "https://i.imgur.com/zjjcJKZ.png"),
+                ("image", "https://i.imgur.com/zjjcJKZ.png"),
+            ],
+            matches,
+        )
 
 
 if __name__ == "__main__":
