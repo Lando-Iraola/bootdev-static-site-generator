@@ -9,8 +9,8 @@ class TextType(Enum):
     BOLD = "bold"
     ITALIC = "italic"
     CODE = "code"
-    LINKS = "link"
-    IMAGES = "image"
+    LINK = "link"
+    IMAGE = "image"
 
 
 class TextNode:
@@ -41,7 +41,7 @@ def text_node_to_html_node(text_node):
             return LeafNode("b", text_node.text)
         case TextType.CODE:
             return LeafNode("code", text_node.text)
-        case TextType.IMAGES:
+        case TextType.IMAGE:
             return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
         case TextType.ITALIC:
             return LeafNode("i", text_node.text)
@@ -81,3 +81,99 @@ def extract_markdown_images(text):
                 tuples = ()
 
     return list_of_tuples
+
+
+def extract_markdown_links(text):
+    first_pattern = r"(\[.+?\])(\(.+?\))"
+    second_pattern = r"(?<=\[).*(?=\])|(?<=\().*(?=\))"
+    matches = re.findall(first_pattern, text)
+    list_of_tuples = []
+    tuples = ()
+    for match in matches:
+        for text in match:
+            tuples = tuples + (re.findall(second_pattern, text)[0],)
+            if len(tuples) == 2:
+                list_of_tuples.append(tuples)
+                tuples = ()
+
+    return list_of_tuples
+
+
+def split_nodes_image(old_nodes):
+    new_nodes = []
+
+    for node in old_nodes:
+        if node.text_type != TextType.TEXT:
+            continue
+
+        images = extract_markdown_images(node.text)
+        if len(images) == 0:
+            new_nodes.append(node)
+            continue
+
+        delimeters = []
+        for image in images:
+            delimeters.append(f"![{image[0]}]({image[1]})")
+
+        split_str = node.text
+
+        for index, delimeter in enumerate(delimeters):
+            if type(split_str) is list:
+                split_str = split_str[index].split(delimeter, 1)
+            else:
+                split_str = split_str.split(delimeter, 1)
+
+            for i, text in enumerate(split_str):
+                if text == "":
+                    new_nodes.append(
+                        TextNode(images[index][0], TextType.IMAGE, images[index][1])
+                    )
+                    break
+
+                new_nodes.append(TextNode(text, TextType.TEXT, None))
+                new_nodes.append(
+                    TextNode(images[index][0], TextType.IMAGE, images[index][1])
+                )
+                break
+
+    return new_nodes
+
+
+def split_nodes_link(old_nodes):
+    new_nodes = []
+
+    for node in old_nodes:
+        if node.text_type != TextType.TEXT:
+            continue
+
+        images = extract_markdown_links(node.text)
+        if len(images) == 0:
+            new_nodes.append(node)
+            continue
+
+        delimeters = []
+        for image in images:
+            delimeters.append(f"[{image[0]}]({image[1]})")
+
+        split_str = node.text
+
+        for index, delimeter in enumerate(delimeters):
+            if type(split_str) is list:
+                split_str = split_str[index].split(delimeter, 1)
+            else:
+                split_str = split_str.split(delimeter, 1)
+
+            for i, text in enumerate(split_str):
+                if text == "":
+                    new_nodes.append(
+                        TextNode(images[index][0], TextType.LINK, images[index][1])
+                    )
+                    break
+
+                new_nodes.append(TextNode(text, TextType.TEXT, None))
+                new_nodes.append(
+                    TextNode(images[index][0], TextType.LINK, images[index][1])
+                )
+                break
+
+    return new_nodes
