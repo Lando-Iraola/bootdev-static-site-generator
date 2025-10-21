@@ -11,6 +11,9 @@ class BlockType(Enum):
 
 
 def block_to_block_type(markdown_block):
+    if len(markdown_block) == 0:
+        return BlockType.PARAGRAPH
+
     if markdown_block[:3] == "```" and markdown_block[-3:] == "```":
         return BlockType.CODE
 
@@ -52,6 +55,7 @@ def block_to_block_type(markdown_block):
         split_block = markdown_block.split("\n")
         is_list = True
         previous_number = 0
+
         for line in split_block:
             if not line[0].isdigit():
                 is_list = False

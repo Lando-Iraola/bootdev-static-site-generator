@@ -33,7 +33,7 @@ class TestBlockNode(unittest.TestCase):
         self.assertNotEqual(BlockType.QUOTE, b_type)
 
     def test_is_code(self):
-        b_type = block_to_block_type("``` this is a normal quote ```")
+        b_type = block_to_block_type("```\nthis is a normal code block\n```")
         self.assertEqual(BlockType.CODE, b_type)
 
     def test_is_unordered_list(self):
@@ -78,6 +78,14 @@ class TestBlockNode(unittest.TestCase):
         b_type = block_to_block_type(
             "0. this is an unordered list\n1. still list and ordered\n2. very much an ordered list"
         )
+        self.assertNotEqual(BlockType.ORDERED_LIST, b_type)
+
+    def test_is_not_ordered_list_by_wrong_length(self):
+        b_type = block_to_block_type(" ")
+        self.assertNotEqual(BlockType.ORDERED_LIST, b_type)
+
+    def test_is_not_ordered_list_by_being_empty(self):
+        b_type = block_to_block_type("")
         self.assertNotEqual(BlockType.ORDERED_LIST, b_type)
 
 
