@@ -22,28 +22,25 @@ def clear_directory(directory):
     return
 
 
-def move_static_to_public_directory(src, dst, cleaned=False):
-    if not cleaned:
-        clear_directory(dst)
-        cleaned = True
+def move_static_to_public_directory(src, dst):
+    if not os.path.exists(dst):
+        os.mkdir(dst)
+
     contents = os.listdir(src)
 
     for item in contents:
-        path = os.path.join(src, item)
-        if os.path.isdir(path):
-            new_directory = os.path.join(dst, item)
-            os.mkdir(new_directory)
-            move_static_to_public_directory(path, new_directory, cleaned=cleaned)
+        from_path = os.path.join(src, item)
+        dest_path = os.path.join(dst, item)
+        print(f" * {from_path} -> {dest_path}")
+        if os.path.isdir(from_path):
+            move_static_to_public_directory(from_path, dest_path)
         else:
-            copy_to = os.path.join(dst, item)
-            shutil.copy(path, copy_to)
 
-
+            shutil.copy(from_path, dest_path)
 
 
 def main():
-    node = TextNode("This is a text node", TextType.BOLD, "https://www.boot.dev")
-    print(node)
+    clear_directory(PUBLIC_FILES)
     move_static_to_public_directory(STATIC_FILES, PUBLIC_FILES)
 
 
