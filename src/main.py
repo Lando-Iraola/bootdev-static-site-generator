@@ -1,17 +1,8 @@
-from htmlnode import HTMLNode
-from textnode import TextNode
+from textnode import TextNode, TextType
 
 
 def main():
-    t = TextNode("some value", "link", "https://www.google.com")
-    print(t)
-
-    node = HTMLNode(
-        tag="a",
-        value="Testing",
-        props={"href": "https://www.google.com", "target": "_blank"},
-    )
-    txt = node.props_to_html()
+    node = TextNode("This is a text node", TextType.BOLD, "https://www.boot.dev")
     print(node)
 
 
