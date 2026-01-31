@@ -1,5 +1,5 @@
 import unittest
-from markdown import extract_title
+from gencontent import extract_title
 
 
 class TestMarkdownRandomStuff(unittest.TestCase):

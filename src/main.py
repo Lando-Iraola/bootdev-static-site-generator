@@ -1,7 +1,7 @@
 import os
 
 from copystatic import clear_directory, move_static_to_public_directory
-from markdown import generate_page
+from gencontent import generate_page
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 PUBLIC_FILES = os.path.join(PROJECT_ROOT, "public")
