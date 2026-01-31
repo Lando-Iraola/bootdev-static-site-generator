@@ -2,8 +2,6 @@ import os
 import shutil
 
 
-
-
 def clear_directory(directory):
     if not os.path.exists(directory):
         os.mkdir(directory)
