@@ -1,19 +1,19 @@
 import os
-
+import sys
 from copystatic import clear_directory, move_static_to_public_directory
 from gencontent import generate_pages_recursive
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
-PUBLIC_FILES = os.path.join(PROJECT_ROOT, "public")
-STATIC_FILES = os.path.join(PROJECT_ROOT, "static")
-TEMPLATE_FILE = os.path.join(PROJECT_ROOT, "template.html")
-MARKDOWN_FILES = os.path.join(PROJECT_ROOT, "content")
-
+dir_path_static = "./static"
+dir_path_public = "./docs"
+dir_path_content = "./content"
+template_path = "./template.html"
 
 def main():
-    clear_directory(PUBLIC_FILES)
-    move_static_to_public_directory(STATIC_FILES, PUBLIC_FILES)
-    generate_pages_recursive(MARKDOWN_FILES, TEMPLATE_FILE, PUBLIC_FILES)
+
+    base_path = sys.argv[1] or "/"
+    clear_directory(dir_path_public)
+    move_static_to_public_directory(dir_path_static, dir_path_public)
+    generate_pages_recursive(dir_path_content, template_path, dir_path_public, base_path)
 
 
 main()

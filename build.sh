@@ -1,0 +1,1 @@
+python3 src/main.py "/Lando-Iraola/bootdev-static-site-generator/"

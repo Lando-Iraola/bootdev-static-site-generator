@@ -3,17 +3,8 @@ import shutil
 
 
 def clear_directory(directory):
-    if not os.path.exists(directory):
-        os.mkdir(directory)
-        return
-    contents = os.listdir(directory)
-    for item in contents:
-        full_path = os.path.join(directory, item)
-        if os.path.isdir(full_path):
-            shutil.rmtree(full_path)
-        else:
-            os.remove(full_path)
-    return
+    if os.path.exists(directory):
+        shutil.rmtree(directory)
 
 
 def move_static_to_public_directory(src, dst):
