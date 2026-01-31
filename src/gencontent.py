@@ -13,22 +13,61 @@ def extract_title(markdown):
 
 def generate_page(from_path, template_path, dest_path):
     print(f"Generating page {from_path} to {dest_path} using {template_path}")
-    with open(from_path, "r") as f:
-        markdown = f.read()
+    for path in os.listdir(from_path):
+        markdown_path = os.path.join(from_path, path)
 
-    with open(template_path, "r") as f:
-        template = f.read()
+        if os.path.isdir(markdown_path):
+            new_dst = os.path.join(dest_path, path)
+            if not os.path.exists(new_dst):
+                os.makedirs(new_dst)
+            generate_page(markdown_path, template_path, new_dst)
+        else:
+            with open(markdown_path, "r") as f:
+                markdown = f.read()
 
-    html = markdown_to_html_node(markdown)
-    html = html.to_html()
-    title = extract_title(markdown)
+            with open(template_path, "r") as f:
+                template = f.read()
 
-    template = template.replace("{{ Title }}", title)
-    template = template.replace("{{ Content }}", html)
+            html = markdown_to_html_node(markdown)
+            html = html.to_html()
+            title = extract_title(markdown)
 
-    if not os.path.exists(dest_path):
-        os.makedirs(dest_path)
+            template = template.replace("{{ Title }}", title)
+            template = template.replace("{{ Content }}", html)
 
-    dest = os.path.join(dest_path, "index.html")
-    with open(dest, "w") as f:
-        f.write(template)
+
+
+            dest = os.path.join(dest_path, "index.html")
+            with open(dest, "w") as f:
+                f.write(template)
+
+
+def generate_pages_recursive(from_path, template_path, dest_path):
+    print(f"Generating page {from_path} to {dest_path} using {template_path}")
+    for path in os.listdir(from_path):
+        markdown_path = os.path.join(from_path, path)
+
+        if os.path.isdir(markdown_path):
+            new_dst = os.path.join(dest_path, path)
+            if not os.path.exists(new_dst):
+                os.makedirs(new_dst)
+            generate_page(markdown_path, template_path, new_dst)
+        else:
+            with open(markdown_path, "r") as f:
+                markdown = f.read()
+
+            with open(template_path, "r") as f:
+                template = f.read()
+
+            html = markdown_to_html_node(markdown)
+            html = html.to_html()
+            title = extract_title(markdown)
+
+            template = template.replace("{{ Title }}", title)
+            template = template.replace("{{ Content }}", html)
+
+
+
+            dest = os.path.join(dest_path, "index.html")
+            with open(dest, "w") as f:
+                f.write(template)
